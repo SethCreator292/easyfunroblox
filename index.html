@@ -3,67 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MathsSpot Fullscreen</title>
+  <title>DoctorAux Embed</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background-color: black;
       overflow: hidden;
     }
-
-    #iframe-container {
-      width: 100vw;
-      height: 100vh;
-      border: none;
-      position: relative;
-    }
-
-    iframe {
+    #frame {
       width: 100%;
       height: 100%;
       border: none;
     }
-
+    #adblock-warning {
+      display: none;
+      height: 100%;
+      width: 100%;
+      background-color: #fff;
+      color: #000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      text-align: center;
+      padding-top: 20%;
+      font-size: 1.5em;
+    }
     #fullscreen-btn {
       position: absolute;
       top: 10px;
       right: 10px;
-      z-index: 1000;
-      padding: 10px 20px;
-      background-color: rgba(255, 255, 255, 0.2);
+      z-index: 10000;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.6);
       color: white;
-      border: 1px solid white;
-      border-radius: 4px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div id="iframe-container">
-    <button id="fullscreen-btn">Go Fullscreen</button>
-    <iframe 
-      id="mathsspot-frame"
-      src="https://mathsspot.com"
-      allowfullscreen
-      allow="fullscreen; autoplay; clipboard-write; encrypted-media"
-    ></iframe>
-  </div>
 
-  <script>
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    const container = document.getElementById('iframe-container');
+<div id="adblock-warning">
+  <p>Please disable your ad blocker to access this content.</p>
+</div>
 
-    fullscreenBtn.addEventListener('click', () => {
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
-      } else if (container.webkitRequestFullscreen) {
-        container.webkitRequestFullscreen();
-      } else if (container.msRequestFullscreen) {
-        container.msRequestFullscreen();
-      }
-    });
-  </script>
+<button id="fullscreen-btn" onclick="goFullscreen()">Fullscreen</button>
+
+<iframe
+  id="frame"
+  src="https://doctoraux.com/"
+  allowfullscreen
+  allow="fullscreen"
+></iframe>
+
+<!-- Adblock Detection Script -->
+<script>
+  function detectAdBlock(callback) {
+    const ad = document.createElement('div');
+    ad.className = 'ad-banner';
+    ad.style.display = 'none';
+    document.body.appendChild(ad);
+    window.setTimeout(() => {
+      const isBlocked = getComputedStyle(ad).display === 'none';
+      document.body.removeChild(ad);
+      callback(isBlocked);
+    }, 100);
+  }
+
+  detectAdBlock(function (blocked) {
+    if (blocked) {
+      document.getElementById('frame').style.display = 'none';
+      document.getElementById('fullscreen-btn').style.display = 'none';
+      document.getElementById('adblock-warning').style.display = 'block';
+    }
+  });
+
+  function goFullscreen() {
+    const iframe = document.getElementById('frame');
+    if (iframe.requestFullscreen) {
+      iframe.requestFullscreen();
+    } else if (iframe.webkitRequestFullscreen) {
+      iframe.webkitRequestFullscreen();
+    } else if (iframe.msRequestFullscreen) {
+      iframe.msRequestFullscreen();
+    } else {
+      alert("Fullscreen not supported in this browser.");
+    }
+  }
+</script>
+
 </body>
 </html>
